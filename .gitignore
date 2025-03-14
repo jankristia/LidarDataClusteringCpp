@@ -1,0 +1,13 @@
+build/
+nanoflann/
+matplotlib-cpp/
+
+*.o
+*.a
+*.so
+*.exe
+*.out
+
+*.log
+
+*~
