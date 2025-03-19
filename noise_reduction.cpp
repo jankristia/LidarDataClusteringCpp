@@ -29,6 +29,8 @@ struct PointCloud {
 // Remove noise using KD-Tree-based KNN
 void remove_noise_knn(std::vector<double>& distances,
                       std::vector<double>& angles,
+                      std::vector<double>& noise_distances,
+                      std::vector<double>& noise_angles,
                       int k, double std_threshold, double mean_threshold) {
     if (distances.size() < k + 1) return;
 
@@ -80,9 +82,13 @@ void remove_noise_knn(std::vector<double>& distances,
         if (std_dev < std_threshold && mean < mean_threshold) {
             filtered_distances.push_back(distances[i]);
             filtered_angles.push_back(angles[i]);
+        } else {
+            noise_distances.push_back(distances[i]);
+            noise_angles.push_back(angles[i]);
         }
     }
-
+    // std::cout << "Distances before noise reduction: " << distances.size() << std::endl;
+    // std::cout << "Distances after noise reduction: " << filtered_distances.size() << std::endl;
     // Update distances and angles
     distances = filtered_distances;
     angles = filtered_angles;
