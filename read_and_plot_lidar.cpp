@@ -145,7 +145,7 @@ void plot_clusters(const vector<vector<pair<double, double>>>& clusters) {
     
     plt::xlabel("X (m)");
     plt::ylabel("Y (m)");
-    plt::title("Clustered LiDAR Data");
+    plt::title("Clustered Free Space Data");
     plt::grid(true);
     plt::axis("equal");
     plt::legend();
@@ -160,6 +160,8 @@ void plot_clusters_and_oriented_rectangles(
     const vector<vector<pair<double, double>>>& expanded_rectangles) {
 
     plt::figure_size(800, 800);
+
+    // Plot clusters
     for (size_t i = 0; i < clusters.size(); ++i) {
         vector<double> x, y;
         for (const auto& point : clusters[i]) {
@@ -169,30 +171,40 @@ void plot_clusters_and_oriented_rectangles(
         plt::scatter(x, y, 10);
     }
 
-    // Draw oriented bounding rectangles
+    // Plot bounding boxes
     for (const auto& rect : rectangles) {
         vector<double> x = {rect[0].first, rect[1].first, rect[2].first, rect[3].first, rect[0].first};
         vector<double> y = {rect[0].second, rect[1].second, rect[2].second, rect[3].second, rect[0].second};
-        plt::plot(x, y, "g-");  // Green oriented bounding box
+        plt::plot(x, y, "g-");  // Green for bounding boxes
     }
 
+    // Plot expanded bounding boxes
     for (const auto& rect : expanded_rectangles) {
         vector<double> x = {rect[0].first, rect[1].first, rect[2].first, rect[3].first, rect[0].first};
         vector<double> y = {rect[0].second, rect[1].second, rect[2].second, rect[3].second, rect[0].second};
-        plt::plot(x, y, "b-");    
+        plt::plot(x, y, "b-");  // Blue for expanded bounding boxes
     }
 
-    // Boat polygon centered at origin
+    // Boat polygon
     vector<double> boat_x = {0, 1, 1, -1, -1, 0.0};
     vector<double> boat_y = {3, 1.5, -1.5, -1.5, 1.5, 3};
-    plt::named_plot("Boat", boat_x, boat_y, "k-");
-    
+    plt::plot(boat_x, boat_y, "k-");  // Black boat outline
 
+    // Manually add legend entries
+    plt::named_plot("Bounding box", vector<double>{0, 0}, vector<double>{0, 0}, "g-");
+    plt::named_plot("Expanded bounding box", vector<double>{0, 0}, vector<double>{0, 0}, "b-");
+    plt::named_plot("Boat", vector<double>{0, 0}, vector<double>{0, 0}, "k-");
+
+    // Formatting
     plt::xlabel("X (m)");
     plt::ylabel("Y (m)");
-    plt::title("Clustered LiDAR Data with Oriented Bounding Boxes");
+    plt::title("Clustered Free Space Data with Oriented Bounding Boxes");
     plt::grid(true);
+    plt::axis("equal");
+    plt::legend();
+    plt::show(false);
 }
+
 
 void plot_safe_travel_distances(
     const vector<vector<pair<double, double>>>& clusters,
@@ -203,7 +215,7 @@ void plot_safe_travel_distances(
 
     plt::figure_size(800, 800);
     
-    // Plot clustered points
+    // Plot clusters
     for (size_t i = 0; i < clusters.size(); ++i) {
         vector<double> x, y;
         for (const auto& point : clusters[i]) {
@@ -213,39 +225,46 @@ void plot_safe_travel_distances(
         plt::scatter(x, y, 10);
     }
 
-    // Plot original oriented bounding boxes
+    // Plot bounding boxes
     for (const auto& rect : rectangles) {
         vector<double> x = {rect[0].first, rect[1].first, rect[2].first, rect[3].first, rect[0].first};
         vector<double> y = {rect[0].second, rect[1].second, rect[2].second, rect[3].second, rect[0].second};
-        plt::plot(x, y, "g-");
+        plt::plot(x, y, "g-");  // Green for bounding boxes
     }
 
     // Plot expanded bounding boxes
     for (const auto& rect : expanded_rectangles) {
         vector<double> x = {rect[0].first, rect[1].first, rect[2].first, rect[3].first, rect[0].first};
         vector<double> y = {rect[0].second, rect[1].second, rect[2].second, rect[3].second, rect[0].second};
-        plt::plot(x, y, "b-");
+        plt::plot(x, y, "b-");  // Blue for expanded bounding boxes
     }
 
-    // Plot safe travel distance rays
+    // Plot safe travel distances
     for (size_t i = 0; i < angles.size(); ++i) {
         double x_end = safe_distances[i] * cos(angles[i]);
         double y_end = safe_distances[i] * sin(angles[i]);
-        plt::plot({0, x_end}, {0, y_end}, "b-");  // Blue for distance rays
+        plt::plot({0, x_end}, {0, y_end}, "r-");  // Red for safe travel distances
     }
 
-    // Boat polygon centered at origin
+    // Boat polygon
     vector<double> boat_x = {0, 1, 1, -1, -1, 0.0};
     vector<double> boat_y = {3, 1.5, -1.5, -1.5, 1.5, 3};
-    plt::named_plot("Boat", boat_x, boat_y, "k-");
-    
-    // plt::xlim(-35,35);
-    // plt::ylim(-15,55);
+    plt::plot(boat_x, boat_y, "k-");  // Black boat outline
+
+    // Manually add legend entries
+    plt::named_plot("Bounding box", vector<double>{0, 0}, vector<double>{0, 0}, "g-");
+    plt::named_plot("Expanded bounding box", vector<double>{0, 0}, vector<double>{0, 0}, "b-");
+    plt::named_plot("Safe travel distances", vector<double>{0, 0}, vector<double>{0, 0}, "r-");
+    plt::named_plot("Boat", vector<double>{0, 0}, vector<double>{0, 0}, "k-");
+
+    // Formatting
     plt::axis("equal");
     plt::xlabel("X (m)");
     plt::ylabel("Y (m)");
     plt::title("Safe Travel Distances");
     plt::grid(true);
+    plt::legend();
+    plt::show(false);
 }
 
 
